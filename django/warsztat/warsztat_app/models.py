@@ -1,0 +1,111 @@
+from django.db import models
+from django.core import validators
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
+
+def validate_password_strength(value):
+    min_length = 5
+
+    if len(value) < min_length:
+        raise ValidationError(_('Password must be at least {0} characters long.').format(min_length))
+
+    # check for digit
+    if not any(char.isdigit() for char in value):
+        raise ValidationError(_('Password must container at least 1 digit.'))
+
+    # check for letter
+    if not any(char.isalpha() for char in value):
+        raise ValidationError(_('Password must container at least 1 letter.'))
+
+		
+	
+STANOWISKO_CHOICE = (
+	('mech', 'Mechanik'),
+	('wlas', 'Własciciel'),
+	('kli', 'Klient'),
+	('adm', 'Administrator'),
+)
+
+DZIAL_CHOICE = (
+	('wulk', 'Wulkanizacja'),
+	('elek', 'Elektronika'),
+	('bla', 'Blacharstwo'),
+	('mech', 'Mechanika'),
+)
+
+STAN_CHOICE = (
+	('rez', 'rezerwacja'), 
+	('potw', 'potwierdzenie'), 
+	('w_napr', 'w naprawie'), 
+	('onc', 'oczekiwanie na czesci'), 
+	('zak', 'zakonczona'),
+)
+
+STATUS_CHOICE = (
+	('zaj', 'Zajęty'),
+	('wol', 'Wolny'),
+)
+# Create your models here.
+class Uzytkownik(models.Model):
+	user = models.OneToOneField(User)
+	#id_uzytkownika = models.IntegerField(primary_key=True, db_index=True)
+	#imie = models.CharField(max_length = 20, db_index=True)
+	#nazwisko = models.CharField(max_length = 30, db_index=True)
+	PESEL = models.CharField(max_length = 11, validators=[validators.MinLengthValidator(11)])
+	NIP = models.CharField(max_length = 10, null=True, blank=True, validators=[validators.MinLengthValidator(10)])
+	#login = models.CharField(max_length = 10, validators=[validators.MinLengthValidator(5)])
+	#haslo = models.CharField(max_length = 20, validators=[validate_password_strength])
+	data_zatrudnienia = models.DateField()
+	wynagrodzenie = models.PositiveIntegerField(null=True, blank=True, )
+	data_urodzenia = models.DateField()
+	adres = models.CharField(max_length = 50)
+	#uprawnienia = models.ForeignKey(Permission)
+	nr_telefonu = models.CharField(max_length = 9, null=True, blank=True, validators=[validators.MinLengthValidator(9)])
+	stanowisko = models.CharField(max_length=4, choices=STANOWISKO_CHOICE)
+	dzial = models.CharField(max_length=4, choices=DZIAL_CHOICE)
+	#superuser = models.NullBooleanField()
+	#ostatnie_logowanie = models.DateField()
+	#teraz_aktywny = models.NullBooleanField()
+	
+class Samochod(models.Model):
+	marka = models.CharField(max_length = 30)
+	model = models.CharField(max_length = 30)
+	nr_rejestracyjny = models.CharField(max_length = 10, primary_key=True, db_index=True)
+	nr_VIN = models.CharField(max_length = 17, unique=True, validators=[validators.MinLengthValidator(17)])
+	przebieg = models.PositiveIntegerField(db_index=True)
+	id_uzytkownika = models.ForeignKey(User, db_column='id_uzytkownika', db_index=True)
+
+class Czesci(models.Model):
+	id_czesci = models.IntegerField(primary_key=True, db_index=True)
+	nazwa = models.CharField(max_length = 50)
+	producent = models.CharField(max_length = 50)
+	cena_w_hurtowni = models.PositiveIntegerField()
+	
+class Wizyta(models.Model):
+	id_wizyty = models.IntegerField(primary_key=True, db_index=True)
+	data = models.DateField(auto_now_add=True, db_index=True)
+	status = models.CharField(max_length=6, choices=STAN_CHOICE, db_index=True)
+	id_uzytkownika = models.ForeignKey(User, db_column='id_uzytkownika', db_index=True)
+	nr_rejestracyjny = models.ForeignKey(Samochod, db_column='nr_rejestracyjny', db_index=False)
+	przebieg_w_momencie_wizyty = models.PositiveIntegerField()
+	opis = models.CharField(max_length = 200)
+	id_czesci = models.ForeignKey(Czesci, db_column='id_czesci')
+	cena = models.PositiveIntegerField()
+	czas_pracowników = models.PositiveIntegerField(validators=[validators.MaxValueValidator(1000)])
+	
+class Sprzet(models.Model):	
+	nazwa_sprzetu = models.CharField(max_length = 20, primary_key=True, db_index=True)
+	status = models.CharField(max_length=3, choices=STATUS_CHOICE)
+	opis = models.CharField(max_length = 200)
+	id_wizyty = models.ForeignKey(Wizyta, db_column = 'id_wizyty', db_index=True)
+	data_przegladu = models.DateField()
+"""
+class Uprawnienia(models.Model):
+	id_uzytkownika = models.ForeignKey(Uzytkownik, db_column='id_uzytkownika', db_index=True)
+	upr1 = models.NullBooleanField()
+"""	
+"""
+class Termin(models.Model):
+	termin = models.DateField(primary_key=True)
+	is_taken = 
+"""
