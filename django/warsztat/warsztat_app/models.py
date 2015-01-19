@@ -83,6 +83,11 @@ class Samochod(models.Model):
     def __str__(self):  # __unicode__ on Python 2
         return self.nr_rejestracyjny
 
+    @property
+    def ostatnia_wizyta(self):
+            wizyty = Wizyta.objects.filter(nr_rejestracyjny=self.nr_rejestracyjny)
+            wizyty = wizyty.order_by('-data')
+            return wizyty[0].data
 
 class Czesci(models.Model):
     id_czesci = models.IntegerField(primary_key=True, db_index=True)
@@ -107,16 +112,16 @@ class Sprzet(models.Model):
 
 class Wizyta(models.Model):
     id_wizyty = models.IntegerField(primary_key=True, db_index=True)
-    data = models.DateField(auto_now_add=True, db_index=True)
+    data = models.DateField(db_index=True)
     status = models.CharField(max_length=6, choices=STAN_CHOICE, db_index=True)
     id_uzytkownika = models.ForeignKey(User, db_column='id_uzytkownika', db_index=True)
     nr_rejestracyjny = models.ForeignKey(Samochod, db_column='nr_rejestracyjny', db_index=False)
     przebieg_w_momencie_wizyty = models.PositiveIntegerField()
     opis = models.CharField(max_length=200)
-    id_czesci = models.ForeignKey(Czesci, db_column='id_czesci')
+    id_czesci = models.ForeignKey(Czesci, db_column='id_czesci', null=True, blank=True)
     cena = models.PositiveIntegerField()
-    czas_pracowników = models.PositiveIntegerField(validators=[validators.MaxValueValidator(1000)])
-    id_sprzetu = models.ForeignKey(Sprzet, db_column='id_sprzetu', db_index=True)
+    czas_pracownikow = models.PositiveIntegerField(validators=[validators.MaxValueValidator(1000)])
+    id_sprzetu = models.ForeignKey(Sprzet, db_column='id_sprzetu', db_index=True, null=True, blank=True)
 
     def __str__(self):  # __unicode__ on Python 2
         return str(self.id_wizyty)

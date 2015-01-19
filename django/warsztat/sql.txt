@@ -1,0 +1,69 @@
+BEGIN;
+CREATE TABLE `warsztat_app_uzytkownik` (
+    `id` integer AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `user_id` integer NOT NULL UNIQUE,
+    `PESEL` varchar(11) NOT NULL,
+    `NIP` varchar(10),
+    `data_zatrudnienia` date NOT NULL,
+    `wynagrodzenie` integer UNSIGNED,
+    `data_urodzenia` date NOT NULL,
+    `adres` varchar(50) NOT NULL,
+    `nr_telefonu` varchar(9),
+    `stanowisko` varchar(4) NOT NULL,
+    `dzial` varchar(4) NOT NULL
+)
+;
+ALTER TABLE `warsztat_app_uzytkownik` ADD CONSTRAINT `user_id_refs_id_aba8e5a3` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+CREATE TABLE `warsztat_app_samochod` (
+    `marka` varchar(30) NOT NULL,
+    `model` varchar(30) NOT NULL,
+    `nr_rejestracyjny` varchar(10) NOT NULL PRIMARY KEY,
+    `nr_VIN` varchar(17) NOT NULL UNIQUE,
+    `przebieg` integer UNSIGNED NOT NULL,
+    `id_uzytkownika` integer NOT NULL
+)
+;
+ALTER TABLE `warsztat_app_samochod` ADD CONSTRAINT `id_uzytkownika_refs_id_6f6613aa` FOREIGN KEY (`id_uzytkownika`) REFERENCES `auth_user` (`id`);
+CREATE TABLE `warsztat_app_czesci` (
+    `id_czesci` integer NOT NULL PRIMARY KEY,
+    `nazwa` varchar(50) NOT NULL,
+    `producent` varchar(50) NOT NULL,
+    `cena_w_hurtowni` numeric(7, 2) NOT NULL
+)
+;
+CREATE TABLE `warsztat_app_sprzet` (
+    `id_sprzetu` integer NOT NULL PRIMARY KEY,
+    `nazwa_sprzetu` varchar(20) NOT NULL,
+    `status` varchar(3) NOT NULL,
+    `opis` varchar(200) NOT NULL,
+    `data_przegladu` date NOT NULL
+)
+;
+CREATE TABLE `warsztat_app_wizyta` (
+    `id_wizyty` integer NOT NULL PRIMARY KEY,
+    `data` date NOT NULL,
+    `status` varchar(6) NOT NULL,
+    `id_uzytkownika` integer NOT NULL,
+    `nr_rejestracyjny` varchar(10) NOT NULL,
+    `przebieg_w_momencie_wizyty` integer UNSIGNED NOT NULL,
+    `opis` varchar(200) NOT NULL,
+    `id_czesci` integer NOT NULL,
+    `cena` integer UNSIGNED NOT NULL,
+    `czas_pracownikow` integer UNSIGNED NOT NULL,
+    `id_sprzetu` integer NOT NULL
+)
+;
+ALTER TABLE `warsztat_app_wizyta` ADD CONSTRAINT `id_czesci_refs_id_czesci_d79b9e97` FOREIGN KEY (`id_czesci`) REFERENCES `warsztat_app_czesci` (`id_czesci`);
+ALTER TABLE `warsztat_app_wizyta` ADD CONSTRAINT `id_sprzetu_refs_id_sprzetu_40478433` FOREIGN KEY (`id_sprzetu`) REFERENCES `warsztat_app_sprzet` (`id_sprzetu`);
+ALTER TABLE `warsztat_app_wizyta` ADD CONSTRAINT `nr_rejestracyjny_refs_nr_rejestracyjny_a0df891d` FOREIGN KEY (`nr_rejestracyjny`) REFERENCES `warsztat_app_samochod` (`nr_rejestracyjny`);
+ALTER TABLE `warsztat_app_wizyta` ADD CONSTRAINT `id_uzytkownika_refs_id_a6f6d7d1` FOREIGN KEY (`id_uzytkownika`) REFERENCES `auth_user` (`id`);
+CREATE INDEX `warsztat_app_samochod_6b8a2a14` ON `warsztat_app_samochod` (`przebieg`);
+CREATE INDEX `warsztat_app_samochod_3b17592e` ON `warsztat_app_samochod` (`id_uzytkownika`);
+CREATE INDEX `warsztat_app_sprzet_7d943bc0` ON `warsztat_app_sprzet` (`nazwa_sprzetu`);
+CREATE INDEX `warsztat_app_wizyta_3d40d808` ON `warsztat_app_wizyta` (`data`);
+CREATE INDEX `warsztat_app_wizyta_48fb58bb` ON `warsztat_app_wizyta` (`status`);
+CREATE INDEX `warsztat_app_wizyta_3b17592e` ON `warsztat_app_wizyta` (`id_uzytkownika`);
+CREATE INDEX `warsztat_app_wizyta_0e1dc267` ON `warsztat_app_wizyta` (`id_czesci`);
+CREATE INDEX `warsztat_app_wizyta_c243bc7b` ON `warsztat_app_wizyta` (`id_sprzetu`);
+
+COMMIT;

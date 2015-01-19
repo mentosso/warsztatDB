@@ -1,0 +1,12 @@
+<p>Wyszukiwano samochody majace powyzej 100 000 km przebiegu.</p>
+
+{% if samochody %}
+    <p>Znaleziono {{ samochody|length }} samochodow.</p>
+    <ul>
+        {% for samochod in samochody %}
+        <li>Numer rejestracyjny:{{ samochod.nr_rejestracyjny }}, VIN: {{ samochod.nr_VIN }}, aktualny przebieg: {{ samochod.przebieg }}, data ostatniej wizyty: {{samochod.ostatnia_wizyta}}</li>
+		{% endfor %}
+    </ul>
+{% else %}
+    <p>Nie znaleziono samochodow spelniajacych kryterium.</p>
+{% endif %}

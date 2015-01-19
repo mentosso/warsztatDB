@@ -1,0 +1,12 @@
+<p>Wyszukiwano: <strong>{{ query }} {{ stan }}</strong></p>
+
+{% if wizyty %}
+    <p>Znaleziono {{ wizyty|length }} wizyt.</p>
+    <ul>
+        {% for wizyta in wizyty %}
+        <li>{{ wizyta.id_wizyty }}, {{ wizyta.data }}, {{ wizyta.get_status_display }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Nie znaleziono wizyt spelniajacych kryterium.</p>
+{% endif %}

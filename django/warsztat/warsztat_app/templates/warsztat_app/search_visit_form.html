@@ -1,0 +1,23 @@
+<html>
+<head>
+    <title>Search</title>
+</head>
+<body>
+    <form action="/warsztat_app/search-visit/" method="get">
+        <input type="date" name="data">
+		<input type="radio" name="stan" value="rez">Rezerwacja<br>
+		<input type="radio" name="stan" value="potw">Potwierdzenie<br>
+		<input type="radio" name="stan" value="w_napr"> W naprawie<br>
+		<input type="radio" name="stan" value="onc"> Oczekiwanie na czesci<br>
+		<input type="radio" name="stan" value="zal">Zakonczona<br>
+        <input type="submit" value="Search">
+    </form>
+	
+	<BR><BR>
+	
+	<form action="/warsztat_app/search-visit/" method="get">
+        <input type="number" name="id"> 
+		<input type="submit" value="Search">
+    </form>
+</body>
+</html>
