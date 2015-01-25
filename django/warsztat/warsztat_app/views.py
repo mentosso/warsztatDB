@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import RequestContext, loader
