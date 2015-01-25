@@ -60,7 +60,7 @@ WSGI_APPLICATION = 'warsztat.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django', 
-        'NAME': 'warsztatdb',
+        'NAME': 'warsztatDB',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on

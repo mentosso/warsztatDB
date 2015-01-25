@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.db import models
 from django.core import validators
 from django.core.exceptions import ValidationError
@@ -22,7 +21,7 @@ def validate_password_strength(value):
 
 STANOWISKO_CHOICE = (
     ('mech', 'Mechanik'),
-    ('wlas', 'Wlasciciel'),
+    ('wlas', 'Własciciel'),
     ('kli', 'Klient'),
     ('adm', 'Administrator'),
 )
@@ -49,26 +48,16 @@ STATUS_CHOICE = (
 # Create your models here.
 class Uzytkownik(models.Model):
     user = models.OneToOneField(User)
-    # id_uzytkownika = models.IntegerField(primary_key=True, db_index=True)
-    # imie = models.CharField(max_length = 20, db_index=True)
-    # nazwisko = models.CharField(max_length = 30, db_index=True)
     PESEL = models.CharField(max_length=11, validators=[validators.MinLengthValidator(11)])
-    NIP = models.CharField(max_length=10, null=True, blank=True, validators=[validators.MinLengthValidator(10)])
-    #login = models.CharField(max_length = 10, validators=[validators.MinLengthValidator(5)])
-    #haslo = models.CharField(max_length = 20, validators=[validate_password_strength])
+    NIP = models.CharField(max_length=10, blank=True, validators=[validators.MinLengthValidator(10)])
     data_zatrudnienia = models.DateField()
     wynagrodzenie = models.PositiveIntegerField(null=True, blank=True, )
     data_urodzenia = models.DateField()
     adres = models.CharField(max_length=50)
-    #uprawnienia = models.ForeignKey(Permission)
     nr_telefonu = models.CharField(max_length=9, null=True, blank=True, validators=[validators.MinLengthValidator(9)])
-    stanowisko = models.CharField(max_length=4, choices=STANOWISKO_CHOICE)
+    stanowisko = models.CharField(max_length=4, choices=STANOWISKO_CHOICE, null=True, blank=True)
     dzial = models.CharField(max_length=4, choices=DZIAL_CHOICE)
 
-
-# superuser = models.NullBooleanField()
-# ostatnie_logowanie = models.DateField()
-# teraz_aktywny = models.NullBooleanField()
     def __str__(self):  # __unicode__ on Python 2
         return self.user.username
 
