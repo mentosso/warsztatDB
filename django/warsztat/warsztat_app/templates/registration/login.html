@@ -2,7 +2,7 @@
 	 {% csrf_token %}
     <form method="post" action=".">{% csrf_token %}
     <div style="text-align:left";>{{ form.as_p }}</div>
-    <input type="hidden" name="next" value="/warsztat_app/" />
     <input type="submit" value="Logowanie"/>    <input type="reset" value="Wyczysc formularz"/>
+    <input type="hidden" name="next" value="/warsztat_app/" />
   </form>
 </fieldset>

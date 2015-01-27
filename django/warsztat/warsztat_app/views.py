@@ -10,23 +10,56 @@ from smsapi.client import SmsAPI
 from smsapi.responses import ApiError
 
 
-def index(request):
-    if request.user.is_authenticated():
-        return render(request, 'warsztat_app/index.html')
+def validate_password_strength(value):
+    min_length = 5
+
+    if len(value) < min_length:
+        return False
+
+    # check for digit
     else:
-        return HttpResponseRedirect('/warsztat_app/login/')
+        if not any(char.isdigit() for char in value):
+            return False
+
+        else:
+            # check for letter
+            if not any(char.isalpha() for char in value):
+                return False
+            else:
+                return True
+
+
+def index(request):
+    return render(request, 'warsztat_app/index.html')
 
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect('/warsztat_app/login/')
+    return HttpResponseRedirect('/warsztat_app/')
 
 
-def detail(request):
-    if 'query' in request.GET and request.GET['query']:
-        id = request.GET['query']
-        uzytkownik = User.objects.filter(id=id)
-        return HttpResponse("Id uzytkownika samochodu %s." % uzytkownik.id)
+def register(request):
+    if not request.user.is_authenticated():
+        if request.method == 'POST':
+            username = request.POST['login']
+            password = request.POST['password']
+            mail = request.POST['mail']
+            imie = request.POST['imie']
+            nazwisko = request.POST['nazwisko']
+            if validate_password_strength(password) and len(username) > 5:
+                user = User.objects.create_user(username, mail, password, first_name=imie, last_name=nazwisko)
+                return HttpResponseRedirect('/warsztat_app/login/')
+            else:
+                return render(request, 'warsztat_app/register.html', {'status': 0})
+        else:
+            return render(request, 'warsztat_app/register.html')
+    else:
+        return HttpResponseRedirect('/warsztat_app/')
+
+
+def detail(request, id):
+    uzytkownik = Samochod.objects.get(pk=id)
+    return HttpResponse("Numer rejestracyjny samochodu %s." % uzytkownik.nr_rejestracyjny)
 
 
 def search_visit_form(request):
@@ -73,7 +106,7 @@ def search_car(request):
                 api.set_params(uzytkownik.first_name, uzytkownik.last_name, samochod.nr_rejestracyjny) #Trzeba wstawic dane klienta z bazy
                 api.set_to(telefon.nr_telefonu) #Pole z nr tel - trzeba wstawic z bazy danych nr klienta bedacego wlascicielem wyszukanego auta
                 api.set_from('ECO') #Pole nadawcy lub typ wiadomości 'Info', 'ECO', '2Way' - najlepiej zostawic 'ECO'
-                #result = api.execute()
+                result = api.execute()
         except ApiError as e:
             return HttpResponse('%i, %s' % (e.code, e.message))
 

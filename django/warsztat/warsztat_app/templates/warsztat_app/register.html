@@ -1,0 +1,17 @@
+<form method="POST" action="">
+	{% if status = 0 %}
+	<p>Nazwa uzytkownika musi miec minimum 5 znakow.</p>
+	<p>Podaj mocniejsze haslo: minimum 5 znakow, w tym jedna cyfra i jedna litera.</p>
+	{% endif %}
+	
+    {% csrf_token %}
+	<p><font color="red">Login: </font><input type="text" name="login"/></p>
+	<p><font color="red">Haslo: </font><input type="password" name="password"/></p>
+	<p>E-mail: <input type="email" name="mail"/></p>
+	<p>Imie: <input type="text" name="imie"/></p>
+	<p>Nazwisko: <input type="text" name="nazwisko"/></p>
+    <input type="submit">
+	<input type="hidden" name="next" value="/warsztat_app/index" />
+</form>
+
+<p>Pola zaznaczone na czerwono sa wymagane.</p>

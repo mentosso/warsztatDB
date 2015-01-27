@@ -5,19 +5,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
 
-def validate_password_strength(value):
-    min_length = 5
 
-    if len(value) < min_length:
-        raise ValidationError(_('Password must be at least {0} characters long.').format(min_length))
-
-    # check for digit
-    if not any(char.isdigit() for char in value):
-        raise ValidationError(_('Password must container at least 1 digit.'))
-
-    # check for letter
-    if not any(char.isalpha() for char in value):
-        raise ValidationError(_('Password must container at least 1 letter.'))
 
 
 STANOWISKO_CHOICE = (
