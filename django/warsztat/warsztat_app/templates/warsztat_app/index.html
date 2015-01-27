@@ -4,6 +4,7 @@
 </head>
 <body>
 	{% if user.is_authenticated %}
+	<p>Witaj, {{ user.first_name}}!</p>
 	<a href="/warsztat_app/logout/">Wyloguj</a><br />
 	
 	<a href="/warsztat_app/search-car/">Wyszukaj samochody</a><BR>
